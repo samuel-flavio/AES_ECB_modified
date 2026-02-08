@@ -1,0 +1,17 @@
+# Pastas de compilação e temporários do Vivado
+*.runs/
+*.hw/
+*.cache/
+*.ip_user_files/
+*.sim/
+
+# Arquivos de log e histórico (journal)
+*.jou
+*.log
+*.str
+
+# Outros arquivos temporários
+*.v_bak
+*.pb
+*~
+*.swp
