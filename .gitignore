@@ -15,3 +15,6 @@
 *.pb
 *~
 *.swp
+
+# Arquivo de Projeto não identificável.
+*.xpr
