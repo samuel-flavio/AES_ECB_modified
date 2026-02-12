@@ -24,6 +24,7 @@ module aes_top_interface #(
     
     // Buffers e contadores
     reg [127:0] data_buffer;        // Armazena os 16 bytes de dados
+    reg [159:0] out_buffer;         // Armazena os 16 bytes de dados e os 4 bytes de contagem
     reg [5:0] count;                // Contador de bytes
     
     // --- MODULOS UART ---
@@ -93,18 +94,18 @@ module aes_top_interface #(
                     if (aes_done) begin
                         state <= SEND;
                         count <= 0;
-                        data_buffer <= aes_out;
+                        out_buffer <= {aes_out, final_cycles};
                     end
                 end
 
                 SEND: begin
                     if (tx_ready && !tx_start) begin
-                        tx_data <= data_buffer[127:120];
+                        tx_data <= out_buffer[159:152];
                         tx_start <= 1;
                     end else if (tx_start && !tx_ready) begin
                         tx_start <= 0;
-                        data_buffer <= {data_buffer[119:0], 8'h00};
-                        if (count == 15) begin
+                        out_buffer <= {out_buffer[151:0], 8'h00};
+                        if (count == 19) begin
                             count <= 0;
                             state <= IDLE;
                         end else count <= count + 1;
@@ -113,6 +114,21 @@ module aes_top_interface #(
 
                 default: state <= IDLE;
             endcase
+        end
+    end
+
+    reg [31:0] cycle_counter; // Contador da quantidade de ciclos usados para processar o AES
+    reg [31:0] final_cycles;  // Trava o valor para envio
+
+    always @(posedge clk) begin
+        if (reset) begin
+            cycle_counter <= 0;
+        end else if (aes_busy) begin
+            cycle_counter <= cycle_counter + 1;
+        end else if (aes_start) begin
+            cycle_counter <= 0; // Reseta ao começar nova cifragem
+        end else if (aes_done) begin
+            final_cycles <= cycle_counter; // Salva o tempo gasto
         end
     end
 
