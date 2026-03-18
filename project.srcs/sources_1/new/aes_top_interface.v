@@ -52,10 +52,10 @@ module aes_top_interface #(
 
     // --- MAQUINA DE ESTADOS ---
     reg [1:0] state;
-    localparam  IDLE            = 3'b000,
-                RECEIVE_DATA    = 3'b001,
-                PROCESS         = 3'b010, 
-                SEND            = 3'b011;
+    localparam  IDLE            = 2'b00,
+                RECEIVE_DATA    = 2'b01,
+                PROCESS         = 2'b10, 
+                SEND            = 2'b11;
 
     // Processo FSM
     always @(posedge clk) begin
