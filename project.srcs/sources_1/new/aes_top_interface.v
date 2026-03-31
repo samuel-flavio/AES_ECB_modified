@@ -18,6 +18,7 @@ module aes_top_interface #(
     reg aes_start;
     wire aes_busy, aes_done;
     wire [127:0] aes_out;
+    wire [127:0] plaintext_for_aes;
 
     // Sinais para detecção de borda no RX
     reg rx_done_pc_prev;
@@ -26,6 +27,7 @@ module aes_top_interface #(
     reg [127:0] data_buffer;        // Armazena os 16 bytes de dados
     reg [159:0] out_buffer;         // Armazena os 16 bytes de dados e os 4 bytes de contagem
     reg [5:0] count;                // Contador de bytes
+    reg [127:0] count_mask;         // Contador para xor com dados de entrada
     
     // --- MODULOS UART ---
     // Recepcao PC 
@@ -43,12 +45,14 @@ module aes_top_interface #(
         .clk(clk),
         .reset(reset),
         .start(aes_start),
-        .plaintext(data_buffer),
+        .plaintext(plaintext_for_aes),
         .initial_key(DEFAULT_KEY),
         .ciphertext(aes_out),
         .busy(aes_busy),
         .done(aes_done)
     );
+
+    assign plaintext_for_aes = data_buffer ^ count_mask;
 
     // --- MAQUINA DE ESTADOS ---
     reg [1:0] state;
@@ -64,6 +68,7 @@ module aes_top_interface #(
             count <= 0;
             tx_start <= 0;
             rx_done_pc_prev <= 0;
+            count_mask <= 128'd0;
         end else begin
             rx_done_pc_prev <= rx_done_pc;
 
@@ -108,6 +113,7 @@ module aes_top_interface #(
                         if (count == 19) begin
                             count <= 0;
                             state <= IDLE;
+                            count_mask <= count_mask + 1;
                         end else count <= count + 1;
                     end
                 end
