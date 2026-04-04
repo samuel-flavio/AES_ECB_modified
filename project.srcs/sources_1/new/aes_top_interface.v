@@ -27,6 +27,10 @@ module aes_top_interface #(
     reg [159:0] out_buffer;         // Armazena os 16 bytes de dados e os 4 bytes de contagem
     reg [5:0] count;                // Contador de bytes
     
+    // --- SINAIS KEY AGILITY ---
+    reg [127:0] key_counter;
+    wire [127:0] current_key = DEFAULT_KEY ^ key_counter;
+
     // --- MODULOS UART ---
     // Recepcao PC 
     uart_rx #(.CLK_FREQ(100_000_000), .BAUD_RATE(921_600)) uart_pc (
@@ -44,7 +48,7 @@ module aes_top_interface #(
         .reset(reset),
         .start(aes_start),
         .plaintext(data_buffer),
-        .initial_key(DEFAULT_KEY),
+        .initial_key(current_key),
         .ciphertext(aes_out),
         .busy(aes_busy),
         .done(aes_done)
@@ -64,6 +68,7 @@ module aes_top_interface #(
             count <= 0;
             tx_start <= 0;
             rx_done_pc_prev <= 0;
+            key_counter <= ~128'd0; // Inicializa com todos os bits em 1
         end else begin
             rx_done_pc_prev <= rx_done_pc;
 
@@ -95,6 +100,7 @@ module aes_top_interface #(
                         state <= SEND;
                         count <= 0;
                         out_buffer <= {aes_out, final_cycles};
+                        key_counter <= key_counter - 1'b1; // Decrementa a cada bloco concluído
                     end
                 end
 
