@@ -29,6 +29,10 @@ module aes_top_interface #(
     reg [5:0] count;                // Contador de bytes
     reg [127:0] count_mask;         // Contador para xor com dados de entrada
     
+    // Buffers para controle de execução dos ciclos do AES
+    reg [31:0] cycle_counter; // Contador da quantidade de ciclos usados para processar o AES
+    reg [31:0] final_cycles;  // Trava o valor para envio
+    
     // --- MODULOS UART ---
     // Recepcao PC 
     uart_rx #(.CLK_FREQ(100_000_000), .BAUD_RATE(921_600)) uart_pc (
@@ -122,9 +126,6 @@ module aes_top_interface #(
             endcase
         end
     end
-
-    reg [31:0] cycle_counter; // Contador da quantidade de ciclos usados para processar o AES
-    reg [31:0] final_cycles;  // Trava o valor para envio
 
     always @(posedge clk) begin
         if (reset) begin
