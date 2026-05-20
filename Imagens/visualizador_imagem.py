@@ -31,5 +31,17 @@ def visualizar_imagem_binaria(bin_path, largura=512, altura=512, colorida=False)
     plt.axis('off') # Esconde os eixos
     plt.show()
 
-# Exemplo de uso:
-# visualizar_imagem_binaria('dados_teste_estresse.bin', largura=512, altura=512, colorida=False)
+def main():
+    # Exemplo de uso:
+    visualizar_imagem_binaria('Imagens/CisnePretoBranco.bin', largura=512, altura=512, colorida=False)
+    visualizar_imagem_binaria('Imagens/resultado_fpga_CisnePretoBranco.bin', largura=512, altura=512, colorida=False)
+
+    visualizar_imagem_binaria('Imagens/FrutaPadraoConstanteCor.bin', largura=512, altura=512, colorida=True)
+    visualizar_imagem_binaria('Imagens/resultado_fpga_FrutaPadraoConstanteCor.bin', largura=512, altura=512, colorida=True)
+
+    visualizar_imagem_binaria('Imagens/VistaAereaSP.bin', largura=512, altura=512, colorida=True)
+    visualizar_imagem_binaria('Imagens/resultado_fpga_VistaAereaSP.bin', largura=512, altura=512, colorida=True)
+
+
+if __name__ == "__main__":
+    main()

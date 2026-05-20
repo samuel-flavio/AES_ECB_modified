@@ -10,10 +10,10 @@ SECRET_KEY = bytes.fromhex('0f1571c947d9e8590cb7add6af7f6798')
 
 # --- Nomes dos Arquivos ---
 # Imagens disponíveis: 'CisnePretoBranco.bin', 'FrutaPadraoConstanteCor.bin', 'vistaAereaSP.bin'
-INPUT_FILE = 'CisnePretoBranco.bin'
-OUTPUT_PYTHON = 'resultado_python.bin'
-OUTPUT_FPGA = 'resultado_fpga.bin'
-OUTPUT_METRICS = 'metricas_performance.csv'
+INPUT_FILE = 'Imagens/VistaAereaSP.bin'
+OUTPUT_PYTHON = 'Imagens/resultado_python_VistaAereaSP.bin'
+OUTPUT_FPGA = 'Imagens/resultado_fpga_VistaAereaSP.bin'
+OUTPUT_METRICS = 'Imagens/metricas_performance_VistaAereaSP.csv'
 
 def aes_python_reference(plaintext_bytes):
     cipher = AES.new(SECRET_KEY, AES.MODE_ECB)
