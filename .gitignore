@@ -4,6 +4,7 @@
 *.cache/
 *.ip_user_files/
 *.sim/
+__pycache__/
 
 # Arquivos de log e histórico (journal)
 *.jou
