@@ -18,7 +18,7 @@ module aes_top_interface #(
     reg aes_start;
     wire aes_busy, aes_done;
     wire [127:0] aes_out;
-    wire [127:0] plaintext_for_aes;
+    reg [127:0] plaintext_for_aes;
 
     // Sinais para detecção de borda no RX
     reg rx_done_pc_prev;
@@ -55,8 +55,6 @@ module aes_top_interface #(
         .busy(aes_busy),
         .done(aes_done)
     );
-
-    assign plaintext_for_aes = data_buffer ^ count_mask;
 
     // --- MAQUINA DE ESTADOS ---
     reg [2:0] state;
@@ -99,6 +97,7 @@ module aes_top_interface #(
                 end
 
                 WAIT_MASK: begin
+                    plaintext_for_aes <= data_buffer ^ count_mask;
                     state <= PROCESS;
                     aes_start <= 1;
                 end
