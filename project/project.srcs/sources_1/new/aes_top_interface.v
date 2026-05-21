@@ -59,11 +59,12 @@ module aes_top_interface #(
     assign plaintext_for_aes = data_buffer ^ count_mask;
 
     // --- MAQUINA DE ESTADOS ---
-    reg [1:0] state;
-    localparam  IDLE            = 2'b00,
-                RECEIVE_DATA    = 2'b01,
-                PROCESS         = 2'b10, 
-                SEND            = 2'b11;
+    reg [2:0] state;
+    localparam  IDLE            = 3'b000,
+                RECEIVE_DATA    = 3'b001,
+                WAIT_MASK       = 3'b010,
+                PROCESS         = 3'b011, 
+                SEND            = 3'b100;
 
     // Processo FSM
     always @(posedge clk) begin
@@ -92,10 +93,14 @@ module aes_top_interface #(
                     if (rx_done_pc && !rx_done_pc_prev) begin
                         data_buffer <= {data_buffer[119:0], rx_data_pc}; 
                         if (count == 15) begin
-                            state <= PROCESS;
-                            aes_start <= 1;
+                            state <= WAIT_MASK;
                         end else count <= count + 1;
                     end
+                end
+
+                WAIT_MASK: begin
+                    state <= PROCESS;
+                    aes_start <= 1;
                 end
 
                 PROCESS: begin
@@ -139,5 +144,5 @@ module aes_top_interface #(
         end
     end
 
-    assign led = state; // LEDs mostram o estado atual
+    assign led = state[1:0]; // LEDs mostram o estado atual
 endmodule

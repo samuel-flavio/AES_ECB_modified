@@ -31,16 +31,19 @@ def calcular_entropia_shannon(caminho_arquivo):
 if __name__ == "__main__":
     # Lista de arquivos baseada nas suas imagens presentes na pasta Imagens/
     arquivos_para_testar = [
-        'Imagens/VistaAereaSP.bin',
-        'Imagens/Resultado AES_ECB/resultado_fpga_VistaAereaSP.bin',
-        'Imagens/CisnePretoBranco.bin',
-        'Imagens/Resultado AES_ECB/resultado_fpga_CisnePretoBranco.bin',
-        'Imagens/FrutaPadraoConstanteCor.bin',
-        'Imagens/Resultado AES_ECB/resultado_fpga_FrutaPadraoConstanteCor.bin'
+        # 'Imagens/VistaAereaSP.bin',
+        # 'Imagens/Resultado AES_ECB/resultado_fpga_VistaAereaSP.bin',
+        # 'Imagens/CisnePretoBranco.bin',
+        # 'Imagens/Resultado AES_ECB/resultado_fpga_CisnePretoBranco.bin',
+        # 'Imagens/FrutaPadraoConstanteCor.bin',
+        # 'Imagens/Resultado AES_ECB/resultado_fpga_FrutaPadraoConstanteCor.bin'
+        'Imagens/ImagemTrabalhoModeloProprioPB.bin',
+        'Imagens/resultado_fpga_ImagemTrabalhoModeloProprioPB.bin',
+        'Imagens/resultado_python_ImagemTrabalhoModeloProprioPB.bin'
     ]
     
     print("--- Cálculo de Entropia de Shannon ---")
     for arquivo in arquivos_para_testar:
         entropia = calcular_entropia_shannon(arquivo)
         if entropia is not None:
-            print(f"Entropia de {arquivo}: {entropia:.4f} bits/byte")
+            print(f"Entropia de {arquivo}: {entropia:.8f} bits/byte")

@@ -10,14 +10,20 @@ SECRET_KEY = bytes.fromhex('0f1571c947d9e8590cb7add6af7f6798')
 
 # --- Nomes dos Arquivos ---
 # Imagens disponíveis: 'CisnePretoBranco.bin', 'FrutaPadraoConstanteCor.bin', 'vistaAereaSP.bin'
-INPUT_FILE = 'Imagens/VistaAereaSP.bin'
-OUTPUT_PYTHON = 'Imagens/resultado_python_VistaAereaSP.bin'
-OUTPUT_FPGA = 'Imagens/resultado_fpga_VistaAereaSP.bin'
-OUTPUT_METRICS = 'Imagens/metricas_performance_VistaAereaSP.csv'
+INPUT_FILE = 'Imagens/ImagemTrabalhoModeloProprioPB.bin'
+OUTPUT_PYTHON = 'Imagens/resultado_python_ImagemTrabalhoModeloProprioPB.bin'
+OUTPUT_FPGA = 'Imagens/resultado_fpga_ImagemTrabalhoModeloProprioPB.bin'
+OUTPUT_METRICS = 'Imagens/metricas_performance_ImagemTrabalhoModeloProprioPB.csv'
 
-def aes_python_reference(plaintext_bytes):
+def aes_python_reference(plaintext_bytes, block_index):
     cipher = AES.new(SECRET_KEY, AES.MODE_ECB)
-    return cipher.encrypt(plaintext_bytes)
+    
+    # Cria a máscara do contador em 16 bytes (128 bits), big-endian para alinhar com a FPGA
+    mask = block_index.to_bytes(16, byteorder='big')
+    # Realiza o XOR bit a bit entre o texto original e a máscara
+    xored_plaintext = bytes(a ^ b for a, b in zip(plaintext_bytes, mask))
+    
+    return cipher.encrypt(xored_plaintext)
 
 def process_file(file_path):
     with open(file_path, 'rb') as f:
@@ -59,7 +65,7 @@ def run_test():
             for i, block in enumerate(blocks):
                 # 1. Gerar referência via Python
                 t_py_start = time.perf_counter()
-                expected_cipher = aes_python_reference(block)
+                expected_cipher = aes_python_reference(block, i)
                 t_py_end = time.perf_counter()
 
                 # 2. Envio para FPGA e medir RTT

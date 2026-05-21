@@ -26,5 +26,10 @@ def preparar_imagem_para_fpga(image_path, output_bin_path, largura=512, altura=5
         
     print(f"Imagem {image_path} convertida para {output_bin_path} ({len(pixel_bytes)} bytes).")
 
+def main():
+    preparar_imagem_para_fpga('ImagemTrabalhoModeloProprio.jpg', 'ImagemTrabalhoModeloProprio.bin', largura=512, altura=512, colorida=True)
+
+if __name__ == "__main__":
+    main()
 # Exemplo de uso:
 # preparar_imagem_para_fpga('sua_imagem.jpg', 'dados_teste_estresse.bin', largura=512, altura=512, colorida=False)
