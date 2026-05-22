@@ -29,8 +29,12 @@ module aes_top_interface #(
     
     // --- SINAIS KEY AGILITY ---
     reg [127:0] key_counter;
-    wire [127:0] current_key = DEFAULT_KEY ^ key_counter;
+    reg [127:0] current_key;
 
+    // Buffers para controle de execução dos ciclos do AES
+    reg [31:0] cycle_counter; // Contador da quantidade de ciclos usados para processar o AES
+    reg [31:0] final_cycles;  // Trava o valor para envio
+    
     // --- MODULOS UART ---
     // Recepcao PC 
     uart_rx #(.CLK_FREQ(100_000_000), .BAUD_RATE(921_600)) uart_pc (
@@ -55,11 +59,12 @@ module aes_top_interface #(
     );
 
     // --- MAQUINA DE ESTADOS ---
-    reg [1:0] state;
-    localparam  IDLE            = 2'b00,
-                RECEIVE_DATA    = 2'b01,
-                PROCESS         = 2'b10, 
-                SEND            = 2'b11;
+    reg [2:0] state;
+    localparam  IDLE            = 3'b000,
+                RECEIVE_DATA    = 3'b001,
+                WAIT_KEY        = 3'b010,
+                PROCESS         = 3'b011, 
+                SEND            = 3'b100;
 
     // Processo FSM
     always @(posedge clk) begin
@@ -68,7 +73,8 @@ module aes_top_interface #(
             count <= 0;
             tx_start <= 0;
             rx_done_pc_prev <= 0;
-            key_counter <= ~128'd0; // Inicializa com todos os bits em 1
+            key_counter <= ~128'd0; // Inicializa com todos os bits em 1 (0xFF...FF)
+            current_key <= DEFAULT_KEY;
         end else begin
             rx_done_pc_prev <= rx_done_pc;
 
@@ -88,11 +94,16 @@ module aes_top_interface #(
                     if (rx_done_pc && !rx_done_pc_prev) begin
                         data_buffer <= {data_buffer[119:0], rx_data_pc}; 
                         if (count == 15) begin
-                            state <= PROCESS;
-                            aes_start <= 1;
+                            state <= WAIT_KEY;
                         end else count <= count + 1;
                     end
                 end
+                
+                WAIT_KEY: begin
+                    current_key <= DEFAULT_KEY ^ key_counter;
+                    state <= PROCESS;
+                    aes_start <= 1;
+                end               
 
                 PROCESS: begin
                     aes_start <= 0;
@@ -123,8 +134,7 @@ module aes_top_interface #(
         end
     end
 
-    reg [31:0] cycle_counter; // Contador da quantidade de ciclos usados para processar o AES
-    reg [31:0] final_cycles;  // Trava o valor para envio
+    
 
     always @(posedge clk) begin
         if (reset) begin
@@ -138,5 +148,5 @@ module aes_top_interface #(
         end
     end
 
-    assign led = state; // LEDs mostram o estado atual
+    assign led = state[1:0]; // LEDs mostram o estado atual
 endmodule

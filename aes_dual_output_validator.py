@@ -10,13 +10,23 @@ SECRET_KEY = bytes.fromhex('0f1571c947d9e8590cb7add6af7f6798')
 
 # --- Nomes dos Arquivos ---
 # Imagens disponíveis: 'CisnePretoBranco.bin', 'FrutaPadraoConstanteCor.bin', 'vistaAereaSP.bin'
-INPUT_FILE = 'Imagens/VistaAereaSP.bin'
-OUTPUT_PYTHON = 'Imagens/resultado_python_VistaAereaSP.bin'
-OUTPUT_FPGA = 'Imagens/resultado_fpga_VistaAereaSP.bin'
-OUTPUT_METRICS = 'Imagens/metricas_performance_VistaAereaSP.csv'
+INPUT_FILE = 'Imagens/FrutaPadraoConstanteCor.bin'
+OUTPUT_PYTHON = 'Imagens/Resultado AES_keyAgillity/resultado_python_FrutaPadraoConstanteCor.bin'
+OUTPUT_FPGA = 'Imagens/Resultado AES_keyAgillity/resultado_fpga_FrutaPadraoConstanteCor.bin'
+OUTPUT_METRICS = 'Imagens/Resultado AES_keyAgillity/metricas_performance_FrutaPadraoConstanteCor.csv'
 
-def aes_python_reference(plaintext_bytes):
-    cipher = AES.new(SECRET_KEY, AES.MODE_ECB)
+def aes_python_reference(plaintext_bytes, block_index):
+    # O contador inicializa com todos os 128 bits em 1 e decrementa a cada bloco,
+    # equivalente ao key_counter <= ~128'd0 e key_counter - 1'b1 do Verilog
+    key_counter = ((1 << 128) - 1) - block_index
+    
+    # Converte SECRET_KEY para inteiro, faz o XOR com o contador e volta para bytes
+    secret_key_int = int.from_bytes(SECRET_KEY, byteorder='big')
+    current_key_int = secret_key_int ^ key_counter
+    current_key_bytes = current_key_int.to_bytes(16, byteorder='big')
+    
+    # Inicializa o AES no modo ECB, mas agora com a chave mascarada
+    cipher = AES.new(current_key_bytes, AES.MODE_ECB)
     return cipher.encrypt(plaintext_bytes)
 
 def process_file(file_path):
@@ -59,9 +69,8 @@ def run_test():
             for i, block in enumerate(blocks):
                 # 1. Gerar referência via Python
                 t_py_start = time.perf_counter()
-                expected_cipher = aes_python_reference(block)
+                expected_cipher = aes_python_reference(block, i)
                 t_py_end = time.perf_counter()
-
                 # 2. Envio para FPGA e medir RTT
                 t_rtt_start = time.perf_counter()
                 ser.write(block)
@@ -80,7 +89,7 @@ def run_test():
                     # Salvar dados em formato binário (bytes puros)
                     f_py.write(expected_cipher)
                     f_fpga.write(fpga_cipher)
-                    
+
                     # Metricas
                     status = 'OK' if fpga_cipher == expected_cipher else 'ERRO'
                     writer.writerow([i, status, f'{t_py_us:.3f}', f'{t_fpga_us}', f'{t_rtt_us}'])
