@@ -4,7 +4,7 @@ import os
 from collections import Counter
 
 # Configurações para o CSV de saída (fora do contexto do git)
-CSV_OUTPUT_PATH = r'C:\caminho\para\seu\arquivo_entropia.csv'  # Altere para o caminho desejado
+CSV_OUTPUT_PATH = r'C:/Xilinx/Projetos/Dados Consolidados/dados_entropia.csv'  # Altere para o caminho desejado
 MODO_ENCRIPTACAO = 'AES_counter'  # Atualize para AES_ECB ou AES_Counter quando necessário
 
 def calcular_entropia_shannon(caminho_arquivo):
@@ -37,20 +37,20 @@ if __name__ == "__main__":
     # Lista de arquivos baseada nas suas imagens presentes na pasta Imagens/
     arquivos_para_testar = [
         'Imagens/VistaAereaSP.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_fpga_VistaAereaSP.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_python_VistaAereaSP.bin',
+        'Imagens/RESULTADO AES_COUNTER/resultado_fpga_VistaAereaSP.bin',
+        'Imagens/RESULTADO AES_COUNTER/resultado_python_VistaAereaSP.bin',
         'Imagens/CisnePretoBranco.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_fpga_CisnePretoBranco.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_python_CisnePretoBranco.bin',
+        'Imagens/RESULTADO AES_COUNTER/resultado_fpga_CisnePretoBranco.bin',
+        'Imagens/RESULTADO AES_COUNTER/resultado_python_CisnePretoBranco.bin',
         'Imagens/FrutaPadraoConstanteCor.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_fpga_FrutaPadraoConstanteCor.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_python_FrutaPadraoConstanteCor.bin',
+        'Imagens/RESULTADO AES_COUNTER/resultado_fpga_FrutaPadraoConstanteCor.bin',
+        'Imagens/RESULTADO AES_COUNTER/resultado_python_FrutaPadraoConstanteCor.bin',
         'Imagens/ImagemTrabalhoModeloProprio.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_fpga_ImagemTrabalhoModeloProprio.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_python_ImagemTrabalhoModeloProprio.bin',
+        'Imagens/RESULTADO AES_COUNTER/resultado_fpga_ImagemTrabalhoModeloProprio.bin',
+        'Imagens/RESULTADO AES_COUNTER/resultado_python_ImagemTrabalhoModeloProprio.bin',
         'Imagens/ImagemTrabalhoModeloProprioPB.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_fpga_ImagemTrabalhoModeloProprioPB.bin',
-        'Imagens/Resultado AES_KeyAgillity/resultado_python_ImagemTrabalhoModeloProprioPB.bin'
+        'Imagens/RESULTADO AES_COUNTER/resultado_fpga_ImagemTrabalhoModeloProprioPB.bin',
+        'Imagens/RESULTADO AES_COUNTER/resultado_python_ImagemTrabalhoModeloProprioPB.bin'
     ]
     
     # Verifica se o CSV já existe para adicionar o cabeçalho se for a primeira execução
