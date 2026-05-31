@@ -4,6 +4,8 @@
 *.cache/
 *.ip_user_files/
 *.sim/
+__pycache__/
+
 
 # Arquivos de log e histórico (journal)
 *.jou
@@ -15,6 +17,9 @@
 *.pb
 *~
 *.swp
+*.js
+*.bat
+*.sh
 
 # Arquivo de Projeto não identificável.
 *.xpr
