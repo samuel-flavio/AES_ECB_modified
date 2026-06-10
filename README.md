@@ -27,10 +27,33 @@ Abaixo está a árvore de diretórios e arquivos controlados pelo Git neste repo
 
 ## Módulo Topo do Hardware (`aes_top_interface.v`)
 
+Estrutura hierárquica do módulo:
+
+```text
+├── aes_top_interface
+    ├── uart_rx
+    ├── uart_tx
+    └── aes_cipher
+        ├── key_expansion
+        |    ├── rcon_lookup  
+        |    └── key_transformation_logic
+        |        ├── rotate_word
+        |        ├── subbed_word
+        |        └── sbox
+        |            └── sbox_data.mem
+        ├── sub_bytes
+        |    └── sbox
+        |        └── sbox_data.mem
+        ├── shift_rows
+        ├── mix_columns
+        |    └── xtimes()
+        └── add_round_key
+```
+
 Este é o arquivo principal (Top-Level) do projeto na FPGA. Ele atua como uma ponte de comunicação entre o computador e o núcleo criptográfico, orquestrando as seguintes instâncias e funcionalidades:
 
 *   **Interface UART (RX/TX):** Instancia os módulos de recepção (RX) e transmissão (TX) serial, configurados para operar na taxa de transmissão (Baud Rate) de 921600. É responsável por receber o bloco de 16 bytes (texto plano) do PC e enviar de volta os 20 bytes da resposta.
-*   **Núcleo AES-128 (`aes_core`):** Instancia o motor criptográfico de hardware. Ao receber os 16 bytes completos da interface UART, esta instância é ativada por uma máquina de estados (FSM) para realizar a encriptação ECB utilizando a chave pré-definida em hardware.
+*   **Núcleo AES-128 (`aes_cipher`):** Instancia o motor criptográfico de hardware. Ao receber os 16 bytes completos da interface UART, esta instância é ativada por uma máquina de estados (FSM) para realizar a encriptação ECB utilizando a chave pré-definida em hardware.
 *   **Contador de Ciclos / Performance:** Instancia um contador de hardware que inicia no primeiro ciclo de processamento do bloco e para quando o dado cifrado está pronto. O valor final (32 bits / 4 bytes) é acoplado ao pacote de resposta.
 *   **Máquina de Estados (FSM):** Controla o fluxo de dados. Agrupa os bytes recebidos da UART, aciona o AES, aguarda a finalização (flag `done`), e empacota os 16 bytes cifrados juntamente com os 4 bytes de ciclos de hardware para enviá-los de volta através do TX.
 
