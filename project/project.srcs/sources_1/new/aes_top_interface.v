@@ -26,10 +26,6 @@ module aes_top_interface #(
     reg [127:0] data_buffer;        // Armazena os 16 bytes de dados
     reg [159:0] out_buffer;         // Armazena os 16 bytes de dados e os 4 bytes de contagem
     reg [5:0] count;                // Contador de bytes
-
-    // --- GERADOR DE MASCARAS ---
-    reg [4:0] mask_idx;                                     // Contador de índice da máscara (0 a 31)
-    wire [127:0] current_mask = 128'h1 << (mask_idx * 4);   // Deslocamento de 1 hexa (4 bits) por índice
     
     // --- MODULOS UART ---
     // Recepcao PC 
@@ -47,7 +43,7 @@ module aes_top_interface #(
         .clk(clk),
         .reset(reset),
         .start(aes_start),
-        .plaintext(data_buffer ^ current_mask), // Aplicação do XOR bit a bit
+        .plaintext(data_buffer),
         .initial_key(DEFAULT_KEY),
         .ciphertext(aes_out),
         .busy(aes_busy),
@@ -100,7 +96,6 @@ module aes_top_interface #(
                         state <= SEND;
                         count <= 0;
                         out_buffer <= {aes_out, final_cycles};
-                        mask_idx <= mask_idx + 1; // Avança para a próxima máscara (faz wrap-around automático 31->0)
                     end
                 end
 
