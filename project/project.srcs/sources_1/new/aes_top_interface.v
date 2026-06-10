@@ -64,7 +64,6 @@ module aes_top_interface #(
             count <= 0;
             tx_start <= 0;
             rx_done_pc_prev <= 0;
-            mask_idx <= 0;
         end else begin
             rx_done_pc_prev <= rx_done_pc;
 
