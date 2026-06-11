@@ -42,6 +42,8 @@ def main():
     # visualizar_imagem_binaria('Imagens/VistaAereaSP.bin', largura=512, altura=512, colorida=True)
     # visualizar_imagem_binaria('Imagens/resultado_fpga_VistaAereaSP.bin', largura=512, altura=512, colorida=True)
 
-    visualizar_imagem_binaria('C:\\Xilinx\\Projetos\\TF\\Imagens\\resultado_fpga_ImagemTrabalhoModeloProprioPB.bin', largura=512, altura=512, colorida=False)
+    visualizar_imagem_binaria('C:\\Xilinx\\Projetos\\TF\\Imagens\\RESULTADO AES_COUNTER\\resultado_fpga_ImagemTrabalhoModeloProprio.bin', largura=512, altura=512, colorida=True)
+    visualizar_imagem_binaria('C:\\Xilinx\\Projetos\\TF\\Imagens\\RESULTADO AES_COUNTER\\resultado_fpga_VistaAereaSP.bin', largura=512, altura=512, colorida=True)
+    visualizar_imagem_binaria('C:\\Xilinx\\Projetos\\TF\\Imagens\\RESULTADO AES_COUNTER\\resultado_fpga_CisnePretoBranco.bin', largura=512, altura=512, colorida=False)
 if __name__ == "__main__":
     main()
